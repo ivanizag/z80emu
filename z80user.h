@@ -138,6 +138,13 @@ extern "C" {
         number_cycles = 0;                                              \
 }
 
+#define Z80_STEP_COMPLETED()                                            \
+{                                                                       \
+        CpuStep((ZEXTEST *) context);				\
+}
+
+
+
 #ifdef __cplusplus
 }
 #endif

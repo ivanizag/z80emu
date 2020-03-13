@@ -20,16 +20,27 @@
 
 static void	emulate (char *filename);
 
-int main (void)
-{
-	time_t	start, stop;
+static int traceStart;
+static int traceEnd;
 
-	start = time(NULL);
+int main (int argc, char *argv[])
+{
+        if (argc >= 2) {
+                traceStart = atoi(argv[1]);
+                traceEnd = traceStart + atoi(argv[2]);
+        } else {
+                traceStart = 0;
+                traceEnd = 0;
+        }
+
+	//time_t	start, stop;
+
+	//start = time(NULL);
         emulate("testfiles/zexdoc.com");
-        emulate("testfiles/zexall.com");        
-	stop = time(NULL);
-	printf("Emulating zexdoc and zexall took a total of %d second(s).\n",
-		(int) (stop - start));
+        //emulate("testfiles/zexall.com");        
+	//stop = time(NULL);
+	//printf("Emulating zexdoc and zexall took a total of %d second(s).\n",
+	//	(int) (stop - start));
 
         return EXIT_SUCCESS;
 }
@@ -43,7 +54,7 @@ static void emulate (char *filename)
 	ZEXTEST	context;
         double 	total;
 
-        printf("Testing \"%s\"...\n", filename);
+        //printf("Testing \"%s\"...\n", filename);
         if ((file = fopen(filename, "rb")) == NULL) {
 
                 fprintf(stderr, "Can't open file!\n");
@@ -71,6 +82,7 @@ static void emulate (char *filename)
         context.memory[7] = 0xc9;       /* RET */
 
 	context.is_done = 0;
+        context.step = 0;
 
         /* Emulate. */
 
@@ -82,6 +94,7 @@ static void emulate (char *filename)
                 total += Z80Emulate(&context.state, CYCLES_PER_STEP, &context);
 
 	while (!context.is_done);
+        /*
         printf("\n%.0f cycle(s) emulated.\n" 
                 "For a Z80 running at %.2fMHz, "
                 "that would be %d second(s) or %.2f hour(s).\n",
@@ -89,6 +102,7 @@ static void emulate (char *filename)
                 Z80_CPU_SPEED / 1000000.0,
                 (int) (total / Z80_CPU_SPEED),
                 total / ((double) 3600 * Z80_CPU_SPEED));
+        */
 }
 
 /* Emulate CP/M bdos call 5 functions 2 (output character on screen) and 9
@@ -121,4 +135,23 @@ void SystemCall (ZEXTEST *zextest)
                 }
 
         }
+}
+
+void CpuStep (ZEXTEST *zextest)
+{
+        if (traceStart <= zextest->step && zextest->step < traceEnd) {
+                printf("PC(%.4x) ", zextest->state.pc);
+                printf("AF(%.4x) ", zextest->state.registers.word[Z80_AF]);
+                printf("BC(%.4x) ", zextest->state.registers.word[Z80_BC]);
+                printf("DE(%.4x) ", zextest->state.registers.word[Z80_DE]);
+                printf("HL(%.4x) ", zextest->state.registers.word[Z80_HL]);
+                printf("SP(%.4x) ", zextest->state.registers.word[Z80_SP]);
+                printf("IX(%.4x) ", zextest->state.registers.word[Z80_IX]);
+                printf("IY(%.4x)\n", zextest->state.registers.word[Z80_IY]);
+        }
+
+        if (traceEnd > 0 && traceEnd < zextest->step) {
+                exit(0);
+        }
+        zextest->step++;
 }

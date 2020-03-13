@@ -12,6 +12,13 @@
 #include "macros.h"
 #include "tables.h"
 
+/* Define as empty optional Z80 macros not defined in z80user.h
+ */
+#ifndef Z80_STEP_COMPLETED()
+        #define Z80_STEP_COMPLETED()
+#endif
+
+
 /* Indirect (HL) or prefixed indexed (IX + d) and (IY + d) memory operands are
  * encoded using the 3 bits "110" (0x06).
  */
@@ -2601,6 +2608,9 @@ emulate_next_instruction:
                         }
 
                 }
+
+                state->pc = pc & 0xffff;
+                Z80_STEP_COMPLETED();
 
                 if (elapsed_cycles >= number_cycles)
 

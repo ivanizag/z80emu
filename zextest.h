@@ -13,12 +13,14 @@
 
 typedef struct ZEXTEST {
 
-	Z80_STATE	state;
-	unsigned char	memory[1 << 16];
-	int 		is_done;
+	Z80_STATE state;
+	unsigned char memory[1 << 16];
+	int step;
+	int is_done;
 
 } ZEXTEST;
 
 extern void     SystemCall (ZEXTEST *zextest);
+extern void     CpuStep (ZEXTEST *zextest);
 
 #endif

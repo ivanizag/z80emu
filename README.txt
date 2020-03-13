@@ -1,5 +1,14 @@
+Modified to compare zexdoc and zexall execution with other emulators.
+z80test can be executed with two numeric arguments. If present it will
+dump the register state for each step bigger than the first arg fo second
+arg steps.
+
+
+
+
+
 z80emu
-Version 1.1.3
+Version 1.1.3 + step trace patch
 
 Copyright (c) 2012-2017 Lin Ke-Fong
  
