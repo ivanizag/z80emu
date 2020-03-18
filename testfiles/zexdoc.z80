@@ -76,7 +76,7 @@ spbt:	ds	2
 ; real system) is available, a failing test case can be isolated by
 ; hand using a binary search of the test space.
 
-
+; address 0x0113
 start:	ld	hl,(6)
 	ld	sp,hl
 	ld	de,msg1
@@ -728,6 +728,7 @@ stabd:	db	0d7h		; flag mask
 	tmsg	'ld (<bc,de>),a'
 
 ; start test pointed to by (hl)
+; address 0x1ae2
 stt:	push	hl
 	ld	a,(hl)		; get pointer to test
 	inc	hl
@@ -927,6 +928,7 @@ nsb1:	ld	a,b
 	
 
 ; clear memory at hl, bc bytes
+; address 0x1c38
 clrmem:	push	af
 	push	bc
 	push	de
@@ -946,6 +948,7 @@ clrmem:	push	af
 ; initialise counter or shifter
 ; de = pointer to work area for counter or shifter
 ; hl = pointer to mask
+; address 0x1c49
 initmask:
 	push	de
 	ex	de,hl
@@ -1191,6 +1194,7 @@ ph11:	add	a,'0'
 	pop	af
 	ret
 
+; address 0x1dce
 bdos	push	af
 	push	bc
 	push	de

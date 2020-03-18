@@ -140,6 +140,15 @@ void SystemCall (ZEXTEST *zextest)
 void CpuStep (ZEXTEST *zextest)
 {
         if (traceStart <= zextest->step && zextest->step < traceEnd) {
+                
+                char f[9];
+                f[8] = 0;
+                int flags = zextest->state.registers.byte[Z80_F];
+                for (int i = 7; i>= 0; i--) {
+                        f[i] = (flags & 1) ? '1': '0';
+                        flags = flags >> 1;
+                } 
+
                 printf("PC(%.4x) ", zextest->state.pc);
                 printf("AF(%.4x) ", zextest->state.registers.word[Z80_AF]);
                 printf("BC(%.4x) ", zextest->state.registers.word[Z80_BC]);
@@ -147,7 +156,8 @@ void CpuStep (ZEXTEST *zextest)
                 printf("HL(%.4x) ", zextest->state.registers.word[Z80_HL]);
                 printf("SP(%.4x) ", zextest->state.registers.word[Z80_SP]);
                 printf("IX(%.4x) ", zextest->state.registers.word[Z80_IX]);
-                printf("IY(%.4x)\n", zextest->state.registers.word[Z80_IY]);
+                printf("IY(%.4x) ", zextest->state.registers.word[Z80_IY]);
+                printf("Flags(%s)\n", f);
         }
 
         if (traceEnd > 0 && traceEnd < zextest->step) {
